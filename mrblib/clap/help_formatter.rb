@@ -23,24 +23,6 @@ module Clap
       sections.compact.join("\n\n")
     end
 
-    private
-
-    def show_header?
-      @command.version_str || (@command.author_str && !@command.has_setting?(:hide_author))
-    end
-
-    def format_header
-      parts = [@command.effective_name]
-      parts << @command.version_str if @command.version_str
-      header = parts.join(" ")
-
-      if @command.author_str && !@command.has_setting?(:hide_author)
-        header += "\n#{@command.author_str}"
-      end
-
-      header
-    end
-
     def format_usage
       parts = ["Usage:"]
       parts << @command.full_name
@@ -70,6 +52,24 @@ module Clap
       end
 
       @command.usage_str || parts.join(" ")
+    end
+
+    private
+
+    def show_header?
+      @command.version_str || (@command.author_str && !@command.has_setting?(:hide_author))
+    end
+
+    def format_header
+      parts = [@command.effective_name]
+      parts << @command.version_str if @command.version_str
+      header = parts.join(" ")
+
+      if @command.author_str && !@command.has_setting?(:hide_author)
+        header += "\n#{@command.author_str}"
+      end
+
+      header
     end
 
     def format_about

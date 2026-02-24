@@ -341,10 +341,7 @@ module Clap
       puts e.version_text
       exit(0)
     rescue Error => e
-      $stderr.puts "error: #{e.message}"
-      $stderr.puts
-      $stderr.puts "For more information, try '--help'"
-      exit(1)
+      handle_error(e)
     end
 
     # Parse and run action handler
@@ -352,12 +349,20 @@ module Clap
       matches = get_matches_safe(args)
       run_action(matches)
       matches
+    rescue Error => e
+      handle_error(e)
     end
 
     # Get help text
     def help_text
       formatter = HelpFormatter.new(self)
       formatter.format
+    end
+
+    # Get usage text
+    def usage_text
+      formatter = HelpFormatter.new(self)
+      formatter.format_usage
     end
 
     # Print help and exit
@@ -373,6 +378,15 @@ module Clap
     end
 
     private
+
+    def handle_error(e)
+      $stderr.puts "error: #{e.message}"
+      $stderr.puts
+      $stderr.puts usage_text
+      $stderr.puts
+      $stderr.puts "For more information, try '--help'"
+      exit(1)
+    end
 
     def run_action(matches)
       # Run subcommand action if present
